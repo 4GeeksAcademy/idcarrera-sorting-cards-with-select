@@ -2,48 +2,24 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Sorting Cards</title>
+    <title>Sorting Cards Select</title>
     <link rel="stylesheet" href="src/style.css"/>
     <!-- Fontawesome is our recomended library for icons --> 
   </head>
   <body>
     <!-- Write your HTML code here, you can delete everything withing the body tags -->
-    <h2>Original:
-      <input type="number" id="cardCounter" min="1" max="52"></input>
-      <button id="drawBtn">Draw</button>
-      <button id="sortBtn">Sort</button>
-    </h2>
+    <div>
+    <label for="cardCount">Original:</label>
+    <input type="number" id="cardCount" min="1" max="20" value="" /> 
+    <button id="drawButton">Draw</button>
+    <button id="sortButton">Sort</button>
+  </div>
 
-    <div id="cardContainer"></div>
+  <div id="cardsContainer" class="cards-row"></div>
 
-    <!-- <div class="poker-card card-spade">
-      <div class="corner top-left">♠</div>
-      <div class="number">A</div>
-      <div class="corner bottom-right">♠</div>
-    </div>
-  
-    <div class="poker-card card-club">
-      <div class="corner top-left">♣</div>
-      <div class="number">A</div>
-      <div class="corner bottom-right">♣</div>
-    </div>
-  
-    <div class="poker-card card-heart">
-      <div class="corner top-left">♥</div>
-      <div class="number">A</div>
-      <div class="corner bottom-right">♥</div>
-    </div>
-  
-    <div class="poker-card card-diamond">
-      <div class="corner top-left">♦</div>
-      <div class="number">A</div>
-      <div class="corner bottom-right">♦</div>
-    </div> -->
+  <h3>Select Sort Log:</h3>
+  <div id="sortLog"></div>
 
-    <h2>Select sort log:</h2>
-    <div id="logContainer"></div>
-
-    <!-- Do not delete this script tag, this is what connects your HTML with the Javascript code -->
-    <script type="module" src="/app.js"></script>
-  </body>
+  <script type="module" src="/app.js"></script>
+</body>
 </html>

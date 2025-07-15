@@ -1,127 +1,117 @@
 import "./style.css";
 
-window.onload = function () {
-  
-  const inputCantidad = document.querySelector('#cardCounter');
-  const drawBtn = document.querySelector('#drawBtn');
-  const sortBtn = document.querySelector('#sortBtn');
-  const cardContainer = document.querySelector('#cardContainer');
-  const logContainer = document.querySelector('#logContainer');
+// Valores posibles de carta
+const values = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+const suits = ["♦", "♥", "♠", "♣"];
 
-  let cartasCreadas = [];
+// Para guardar las cartas actuales
+let currentCards = [];
 
-  const valores = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
-  const iconos = ['♠', '♣', '♥', '♦'];
+// Función que devuelve una carta aleatoria
+function getRandomCard() {
+  const value = values[Math.floor(Math.random() * values.length)];
+  const suit = suits[Math.floor(Math.random() * suits.length)];
+  return { value, suit };
+}
 
-  const iconoEstilos = {
-    '♠': 'card-spade',
-    '♣': 'card-club',
-    '♥': 'card-heart',
-    '♦': 'card-diamond'
-  };
+// Función que genera N cartas aleatorias
+function generateRandomCards(count) {
+  let cards = [];
+  for (let i = 0; i < count; i++) {
+    cards.push(getRandomCard());
+  }
+  return cards;
+}
 
-  function crearCarta() {
-    const valor = valores[Math.floor(Math.random() * valores.length)];
-    const icono = iconos[Math.floor(Math.random() * iconos.length)];
-    const estilo = iconoEstilos[icono];
-
-    const carta = document.createElement('div');
-    carta.classList.add('poker-card', estilo);
-    carta.innerHTML = `
-      <div class="corner top-left">${icono}</div>
-      <div class="number">${valor}</div>
-      <div class="corner bottom-right">${icono}</div>
+// Función que pinta cartas en el contenedor
+function renderCards(cards, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+  cards.forEach(card => {
+    const cardDiv = document.createElement("div");
+    cardDiv.className = "card";
+    cardDiv.innerHTML = `
+      <div class="top">${card.suit}</div>
+      <div class="value">${formatValue(card.value)}</div>
+      <div class="bottom">${card.suit}</div>
     `;
+    cardDiv.style.color = (card.suit === "♦" || card.suit === "♥") ? "red" : "black";
+    container.appendChild(cardDiv);
+  });
+}
 
-    return {
-      valor: valor,
-      icono: icono,
-      elemento: carta
-    };
-  }
+// Para convertir 1→A, 11→J, 12→Q, 13→K
+function formatValue(value) {
+  if (value === 1) return "A";
+  if (value === 11) return "J";
+  if (value === 12) return "Q";
+  if (value === 13) return "K";
+  return value;
+}
 
-  function obtenerValorNumerico(valor) {
-    if (valor === 'A') return 1;
-    if (valor === 'J') return 11;
-    if (valor === 'Q') return 12;
-    if (valor === 'K') return 13;
-    return parseInt(valor);
-  }
+// Evento del botón "Draw"
+document.getElementById("drawButton").addEventListener("click", () => {
+  const count = parseInt(document.getElementById("cardCount").value);
+  currentCards = generateRandomCards(count);
+  document.getElementById("sortLog").innerHTML = "";
 
-  function imprimirLog(arreglo, paso = 0) {
-    const pasoContainer = document.createElement('div');
-    pasoContainer.style.display = 'flex';
-    pasoContainer.style.alignItems = 'center';
-    pasoContainer.style.marginBottom = '8px';
-    pasoContainer.style.gap = '5px';
+  renderCards(currentCards, "cardsContainer");
+});
 
-    const label = document.createElement('span');
-    label.textContent = `${paso}:`;
-    label.style.minWidth = '40px';
-    label.style.color = 'black';
-    pasoContainer.appendChild(label);
+function selectionSortWithSteps(cards) {
+  let steps = [];
+  let arr = [...cards.map(card => ({ ...card }))]; // Clonamos cartas
 
-    arreglo.forEach(carta => {
-      const estilo = iconoEstilos[carta.icono];
-      const cartaDiv = document.createElement('div');
-      cartaDiv.classList.add('poker-card', estilo);
-      cartaDiv.innerHTML = `
-        <div class="corner top-left">${carta.icono}</div>
-        <div class="number">${carta.valor}</div>
-        <div class="corner bottom-right">${carta.icono}</div>
-      `;
-      pasoContainer.appendChild(cartaDiv);
-    });
-
-    logContainer.appendChild(pasoContainer);
-  }
-
-  function ordenarCartas() {
-    let wall = cartasCreadas.length - 1;
-    let paso = 0;
-
-    while (wall > 0) {
-      for (let i = 0; i < wall; i++) {
-        const valorActual = obtenerValorNumerico(cartasCreadas[i].valor);
-        const valorSiguiente = obtenerValorNumerico(cartasCreadas[i + 1].valor);
-
-        if (valorActual > valorSiguiente) {
-          let temp = cartasCreadas[i];
-          cartasCreadas[i] = cartasCreadas[i + 1];
-          cartasCreadas[i + 1] = temp;
-
-          imprimirLog(cartasCreadas, paso);
-          //mostrarCartas(cartasCreadas);
-          paso++;
-        }
+  for (let i = 0; i < arr.length; i++) {
+    let min = i;
+    for (let j = i + 1; j < arr.length; j++) {
+      if (arr[j].value < arr[min].value) {
+        min = j;
       }
-      wall--;
     }
+
+    if (min !== i) {
+      [arr[i], arr[min]] = [arr[min], arr[i]];
+    }
+
+    // Guardamos una copia del estado actual
+    steps.push([...arr.map(card => ({ ...card }))]);
   }
 
-  function mostrarCartas(cartas) {
-    cardContainer.innerHTML = '';
-    cartas.forEach(carta => {
-      cardContainer.appendChild(carta.elemento);
+  return steps;
+}
+
+function renderSortLog(steps, containerId) {
+  const container = document.getElementById(containerId);
+  container.innerHTML = "";
+
+  steps.forEach((step, index) => {
+    const row = document.createElement("div");
+    row.className = "sort-step";
+
+    const label = document.createElement("div");
+    label.className = "step-label";
+    label.textContent = `${index}`;
+    row.appendChild(label);
+
+    step.forEach(card => {
+      const cardDiv = document.createElement("div");
+      cardDiv.className = "card small";
+      cardDiv.innerHTML = `
+        <div class="top">${card.suit}</div>
+        <div class="value">${formatValue(card.value)}</div>
+        <div class="bottom">${card.suit}</div>
+      `;
+      cardDiv.style.color = (card.suit === "♦" || card.suit === "♥") ? "red" : "black";
+      row.appendChild(cardDiv);
     });
-  }
 
-  drawBtn.addEventListener('click', () => {
-    const cantidad = parseInt(inputCantidad.value);
-    cardContainer.innerHTML = '';
-    logContainer.innerHTML = '';
-    cartasCreadas = [];
-
-    for (let i = 0; i < cantidad; i++) {
-      const nuevaCarta = crearCarta();
-      cartasCreadas.push(nuevaCarta);
-      cardContainer.appendChild(nuevaCarta.elemento);
-    }
-
-    mostrarCartas(cartasCreadas);
+    container.appendChild(row);
   });
+}
 
-  sortBtn.addEventListener('click', () => {
-    ordenarCartas();
-  });
-};
+document.getElementById("sortButton").addEventListener("click", () => {
+  const steps = selectionSortWithSteps(currentCards);
+  renderSortLog(steps, "sortLog");
+});
+
