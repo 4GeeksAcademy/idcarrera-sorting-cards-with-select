@@ -1,33 +1,47 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="./assets/img/4geeks.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hello Rigo with Vanilla.js</title>
-
-    <!-- Fontawesome is our recomended library for icons -->
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.2.0/css/all.css"
-      integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ"
-      crossorigin="anonymous"
-    />
+    <meta charset="UTF-8">
+    <title>Sorting Cards</title>
+    <link rel="stylesheet" href="src/style.css"/>
+    <!-- Fontawesome is our recomended library for icons --> 
   </head>
   <body>
     <!-- Write your HTML code here, you can delete everything withing the body tags -->
-    <div class="container-fluid text-center">
-      <h1 class="mt-5">Hello Rigo!</h1>
-      <img src="./assets/img/rigo-baby.jpg" />
-      <p class="alert alert-warning mt-4">
-        If this text is <b>not</b> centered and <b>yellow</b>, you probably have
-        an error
-      </p>
-      <div class="fixed-bottom p-4">
-        Made with ❤️ by
-        <a href="https://www.4geeksacademy.com">4Geeks Academy</a>
-      </div>
+    <h2>Original:
+      <input type="number" id="cardCounter" min="1" max="52"></input>
+      <button id="drawBtn">Draw</button>
+      <button id="sortBtn">Sort</button>
+    </h2>
+
+    <div id="cardContainer"></div>
+
+    <!-- <div class="poker-card card-spade">
+      <div class="corner top-left">♠</div>
+      <div class="number">A</div>
+      <div class="corner bottom-right">♠</div>
     </div>
+  
+    <div class="poker-card card-club">
+      <div class="corner top-left">♣</div>
+      <div class="number">A</div>
+      <div class="corner bottom-right">♣</div>
+    </div>
+  
+    <div class="poker-card card-heart">
+      <div class="corner top-left">♥</div>
+      <div class="number">A</div>
+      <div class="corner bottom-right">♥</div>
+    </div>
+  
+    <div class="poker-card card-diamond">
+      <div class="corner top-left">♦</div>
+      <div class="number">A</div>
+      <div class="corner bottom-right">♦</div>
+    </div> -->
+
+    <h2>Select sort log:</h2>
+    <div id="logContainer"></div>
 
     <!-- Do not delete this script tag, this is what connects your HTML with the Javascript code -->
     <script type="module" src="/app.js"></script>
